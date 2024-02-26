@@ -31,6 +31,6 @@ jobs:
 
       - name: Build with Maven
         run: ./mvnw clean install
-
-      - name: Run Sonar
-        run: ./mvnw sonar:sonar
+#
+#      - name: Run Sonar
+#        run: ./mvnw sonar:sonar
