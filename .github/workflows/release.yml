@@ -4,12 +4,6 @@ on:
   push:
     tags:
       - 'v*'     # Trigger on version tags for releases
-  workflow_dispatch: # Allow manual triggering of the workflow
-    inputs:
-      snapshot:
-        description: 'Deploy SNAPSHOT version'
-        required: false
-        default: 'false'
 
 jobs:
   build-and-deploy:
@@ -43,10 +37,3 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           GPG_PASSPHRASE: ${{ secrets.SEER_GPG_PASSWORD }}
-
-      - name: Deploy SNAPSHOT to OSSRH
-        if: github.event.inputs.snapshot == 'true'  # Only deploy SNAPSHOTs when manually triggered
-        run: ./mvnw clean deploy --settings .github/maven/settings-snapshot.xml
-        env:
-          OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
