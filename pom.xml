@@ -9,10 +9,11 @@
     <name>reportability-screener</name>
 
     <properties>
+        <!-- build under 17 but release as JDK 8 compatible -->
         <java.version>17</java.version>
-
-        <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.release>8</maven.compiler.release>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -98,7 +99,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.12.1</version>
                 <configuration>
-                    <release>8</release>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
             </plugin>
             <plugin>
