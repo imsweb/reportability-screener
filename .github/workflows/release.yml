@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: '17'
+          java-version: '21'
           cache: 'maven'
           gpg-private-key: ${{ secrets.SEER_GPG_SECRET_KEY }}
           gpg-passphrase: ${{ secrets.SEER_GPG_PASSWORD }}
