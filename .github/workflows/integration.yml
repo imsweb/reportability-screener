@@ -36,5 +36,5 @@ jobs:
         run: ./mvnw -B clean install
 
       - name: Run Sonar
-        run: ./mvnw -B sonar:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }} -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw -B sonar:sonar -Dsonar.projectKey=imsweb_reportability-screener -Dsonar.organization=imsweb -Dsonar.host.url="https://sonarcloud.io" -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
