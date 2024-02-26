@@ -33,9 +33,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-m2
 
+      - name: Set executable permission for Maven Wrapper
+        run: chmod +x ./mvnw
+
       - name: Deploy to Maven Central
         if: startsWith(github.ref, 'refs/tags/')  # Only deploy releases to Maven Central
-        run: mvn clean deploy --settings .github/maven/settings.xml
+        run: ./mvnw clean deploy --settings .github/maven/settings.xml
         env:
           OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -43,7 +46,7 @@ jobs:
 
       - name: Deploy SNAPSHOT to OSSRH
         if: github.event.inputs.snapshot == 'true'  # Only deploy SNAPSHOTs when manually triggered
-        run: mvn clean deploy --settings .github/maven/settings-snapshot.xml
+        run: ./mvnw clean deploy --settings .github/maven/settings-snapshot.xml
         env:
           OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
