@@ -9,7 +9,7 @@
     <name>reportability-screener</name>
 
     <properties>
-        <java.version>8</java.version>
+        <java.version>17</java.version>
 
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -122,11 +122,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.7.0.1746</version>
             </plugin>
         </plugins>
     </build>

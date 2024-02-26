@@ -14,11 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 8
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: '8'
+          java-version: '17'
           cache: 'maven'
 
       - name: Set executable permission for Maven Wrapper
