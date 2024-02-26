@@ -8,7 +8,7 @@ public class ReportabilityScreener {
     private static final Logger LOG = LoggerFactory.getLogger(ReportabilityScreener.class);
 
     public String getReportability() {
-        LOG.info("in getReportability");
+        LOG.debug("in getReportability");
 
         return "test";
     }
