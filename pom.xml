@@ -10,7 +10,7 @@
 
     <properties>
         <!-- build under 21 but release as JDK 8 compatible -->
-        <java.version>21</java.version>
+        <java.version>8</java.version>
         <maven.compiler.release>8</maven.compiler.release>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,6 +36,16 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>2.0.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.9</version>
+        </dependency>
+        <dependency>
+          <groupId>org.ahocorasick</groupId>
+          <artifactId>ahocorasick</artifactId>
+          <version>0.6.3</version>
         </dependency>
 
         <!-- test libraries -->
