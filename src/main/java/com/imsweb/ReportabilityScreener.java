@@ -33,12 +33,26 @@ public class ReportabilityScreener {
         return result;
     }
 
+    /**
+     * If the start/end indexes of a positive keyword are withing the start/end indexes of a negative keyword,
+     * set ignored=true on the positive keyword.
+     * E.g. the text "not cancer" will create keyword matches for positive keyword "cancer" and
+     * negative keyword "not cancer". The positive keyword is being negated, and should be ignored.
+     * @param positiveKeywords positive keyword matches from the text being screened, including start/end indexes
+     * @param negativeKeywords negative keyword matches from the text being screened, including start/end indexes
+     */
     private void ignoreNegatedPositiveKeywordMatches(List<Keyword> positiveKeywords, List<Keyword> negativeKeywords) {
         positiveKeywords.stream()
                 .filter(k -> negativeKeywords.stream().anyMatch(nk -> nk.getStart() <= k.getStart() && k.getEnd() <= nk.getEnd()))
                 .forEach(k -> k.setIgnored(true));
     }
 
+    /**
+     * If there are any non-ignored positive keyword matches, the screened text is considered Reportable.
+     * Otherwise, it is considered Non-reportable.
+     * @param positiveKeywords positive keyword matches from the text being screened
+     * @return ReportabilityResult indicating whether the screened text is Reportable or Non-reportable.
+     */
     private ReportabilityResult getResultBasedOnKeywordMatches(List<Keyword> positiveKeywords) {
         if (positiveKeywords.stream().anyMatch(k -> !k.isIgnored()))
             return ReportabilityResult.REPORTABLE;
