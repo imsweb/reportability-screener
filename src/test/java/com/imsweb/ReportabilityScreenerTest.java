@@ -55,7 +55,7 @@ class ReportabilityScreenerTest {
     }
 
     @Test
-    public void testIgnoreNegatedPositiveKeywordMatches() {
+    void testIgnoreNegatedPositiveKeywordMatches() {
         List<Keyword> positiveKeywordMatches;
         List<Keyword> negativeKeywordMatches;
         ReportabilityScreener screener = new ReportabilityScreenerBuilder().build();
@@ -127,7 +127,7 @@ class ReportabilityScreenerTest {
     }
 
     @Test
-    public void testGetResultBasedOnKeywordMatches() {
+    void testGetResultBasedOnKeywordMatches() {
         ReportabilityScreener screener = new ReportabilityScreenerBuilder().build();
         assertThat(ReportabilityResult.NON_REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.emptyList()));
 
