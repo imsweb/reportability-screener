@@ -6,19 +6,15 @@ package com.imsweb;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.List;
 
 import org.ahocorasick.trie.Trie;
 import org.ahocorasick.trie.Trie.TrieBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.imsweb.ReportabilityScreener.Group;
 
 public class ReportabilityScreenerBuilder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReportabilityScreener.class);
     private final TrieBuilder _positiveTrieBuilder;
     private final TrieBuilder _negativeTrieBuilder;
     private final TrieBuilder _otherTrieBuilder;
@@ -56,10 +52,7 @@ public class ReportabilityScreenerBuilder {
             reader.lines().map(l -> l.split("\\|")).forEach(l -> add(l[0], getGroupFromString(l[1])));
         }
         catch (IOException e) {
-            LOG.error("Unable to parse default keyword list.", e);
-        }
-        catch (InvalidParameterException e) {
-            LOG.error(e.getMessage(), e);
+            throw new IllegalStateException("Unable to parse default keyword list.", e);
         }
 
     }
@@ -77,7 +70,7 @@ public class ReportabilityScreenerBuilder {
                 group = Group.OTHER;
                 break;
             default:
-                throw new InvalidParameterException("Unexpected group value: " + groupString);
+                throw new IllegalArgumentException("Unexpected group value: " + groupString);
         }
         return group;
     }
