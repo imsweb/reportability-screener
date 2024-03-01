@@ -11,10 +11,10 @@ import static com.imsweb.ReportabilityScreener.Group.POSITIVE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-public class ReportabilityScreenerBuilderTest {
+class ReportabilityScreenerBuilderTest {
 
     @Test
-    public void testGetGroupFromString() {
+    void testGetGroupFromString() {
         ReportabilityScreenerBuilder builder = new ReportabilityScreenerBuilder();
         assertThat(builder.getGroupFromString("Positive")).isEqualTo(POSITIVE);
         assertThat(builder.getGroupFromString("Negative")).isEqualTo(NEGATIVE);
