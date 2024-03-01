@@ -24,9 +24,9 @@ public class ReportabilityScreenerBuilder {
     private final TrieBuilder _otherTrieBuilder;
 
     public ReportabilityScreenerBuilder() {
-        _positiveTrieBuilder = Trie.builder().onlyWholeWords();
-        _negativeTrieBuilder = Trie.builder().onlyWholeWords();
-        _otherTrieBuilder = Trie.builder().onlyWholeWords();
+        _positiveTrieBuilder = Trie.builder().onlyWholeWords().ignoreCase();
+        _negativeTrieBuilder = Trie.builder().onlyWholeWords().ignoreCase();
+        _otherTrieBuilder = Trie.builder().onlyWholeWords().ignoreCase();
     }
 
     public ReportabilityScreener build() {
