@@ -15,6 +15,13 @@ public class Keyword {
     private Group _group;
     private boolean _ignored;
 
+    public Keyword (String keyword, int start, int end, Group group) {
+        _keyword = keyword;
+        _start = start;
+        _end = end;
+        _group = group;
+    }
+
     public Keyword(Emit emit, Group group) {
         _keyword = emit.getKeyword();
         _start = emit.getStart();

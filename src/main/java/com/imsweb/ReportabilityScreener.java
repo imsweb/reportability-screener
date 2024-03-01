@@ -41,7 +41,7 @@ public class ReportabilityScreener {
      * @param positiveKeywords positive keyword matches from the text being screened, including start/end indexes
      * @param negativeKeywords negative keyword matches from the text being screened, including start/end indexes
      */
-    private void ignoreNegatedPositiveKeywordMatches(List<Keyword> positiveKeywords, List<Keyword> negativeKeywords) {
+    protected void ignoreNegatedPositiveKeywordMatches(List<Keyword> positiveKeywords, List<Keyword> negativeKeywords) {
         positiveKeywords.stream()
                 .filter(k -> negativeKeywords.stream().anyMatch(nk -> nk.getStart() <= k.getStart() && k.getEnd() <= nk.getEnd()))
                 .forEach(k -> k.setIgnored(true));
@@ -53,7 +53,7 @@ public class ReportabilityScreener {
      * @param positiveKeywords positive keyword matches from the text being screened
      * @return ReportabilityResult indicating whether the screened text is Reportable or Non-reportable.
      */
-    private ReportabilityResult getResultBasedOnKeywordMatches(List<Keyword> positiveKeywords) {
+    protected ReportabilityResult getResultBasedOnKeywordMatches(List<Keyword> positiveKeywords) {
         if (positiveKeywords.stream().anyMatch(k -> !k.isIgnored()))
             return ReportabilityResult.REPORTABLE;
         else
