@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- SonarQube -->
-        <sonar.java.source>${java.version}</sonar.java.source>
+        <sonar.java.source>8</sonar.java.source>
         <sonar.sources>src/main</sonar.sources>
     </properties>
 
