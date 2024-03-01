@@ -20,9 +20,9 @@ public class ReportabilityScreenerBuilder {
     private final TrieBuilder _otherTrieBuilder;
 
     public ReportabilityScreenerBuilder() {
-        _positiveTrieBuilder = Trie.builder();
-        _negativeTrieBuilder = Trie.builder();
-        _otherTrieBuilder = Trie.builder();
+        _positiveTrieBuilder = Trie.builder().onlyWholeWords();
+        _negativeTrieBuilder = Trie.builder().onlyWholeWords();
+        _otherTrieBuilder = Trie.builder().onlyWholeWords();
     }
 
     public ReportabilityScreener build() {

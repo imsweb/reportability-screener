@@ -49,6 +49,7 @@ class ReportabilityScreenerTest {
         assertThat(result.getResult()).isEqualTo(ReportabilityResult.REPORTABLE);
         result = screener.screen("not cancer");
         assertThat(result.getResult()).isEqualTo(ReportabilityResult.NON_REPORTABLE);
+        // positive keyword "ca" should not match in "turcica" because keyword matches are whole-word-only
         result = screener.screen("not cancer no ca sella turcica");
         assertThat(result.getResult()).isEqualTo(ReportabilityResult.NON_REPORTABLE);
     }
