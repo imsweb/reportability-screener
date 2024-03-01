@@ -3,6 +3,7 @@
  */
 package com.imsweb;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -12,11 +13,6 @@ import org.ahocorasick.trie.Trie;
 import org.ahocorasick.trie.Trie.TrieBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.RFC4180Parser;
-import com.opencsv.exceptions.CsvException;
 
 import com.imsweb.ReportabilityScreener.Group;
 
@@ -56,13 +52,10 @@ public class ReportabilityScreenerBuilder {
     }
 
     public void defaultKeywords() {
-        try (CSVReader reader = new CSVReaderBuilder(new FileReader("src/main/resources/default.keyword.list")).withCSVParser(new RFC4180Parser()).withSkipLines(1).build()) {
-            String[] line;
-            while ((line = reader.readNext()) != null) {
-                add(line[0], getGroupFromString(line[1]));
-            }
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/default.keyword.list.txt"))) {
+            reader.lines().map(l -> l.split("\\|")).forEach(l -> add(l[0], getGroupFromString(l[1])));
         }
-        catch (CsvException | IOException e) {
+        catch (IOException e) {
             LOG.error("Unable to parse default keyword list.", e);
         }
         catch (InvalidParameterException e) {
