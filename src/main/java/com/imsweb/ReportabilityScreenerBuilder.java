@@ -13,6 +13,10 @@ import org.ahocorasick.trie.Trie.TrieBuilder;
 
 import com.imsweb.ReportabilityScreener.Group;
 
+import static com.imsweb.ReportabilityScreener.Group.NEGATIVE;
+import static com.imsweb.ReportabilityScreener.Group.OTHER;
+import static com.imsweb.ReportabilityScreener.Group.POSITIVE;
+
 public class ReportabilityScreenerBuilder {
 
     private final TrieBuilder _positiveTrieBuilder;
@@ -61,13 +65,13 @@ public class ReportabilityScreenerBuilder {
         Group group;
         switch (groupString) {
             case "Positive":
-                group = Group.POSITIVE;
+                group = POSITIVE;
                 break;
             case "Negative":
-                group = Group.NEGATIVE;
+                group = NEGATIVE;
                 break;
             case "Other":
-                group = Group.OTHER;
+                group = OTHER;
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected group value: " + groupString);

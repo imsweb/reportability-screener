@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.imsweb.ReportabilityScreener.Group;
-import com.imsweb.ReportabilityScreener.ReportabilityResult;
-
+import static com.imsweb.ReportabilityScreener.Group.NEGATIVE;
+import static com.imsweb.ReportabilityScreener.Group.OTHER;
+import static com.imsweb.ReportabilityScreener.Group.POSITIVE;
+import static com.imsweb.ReportabilityScreener.ReportabilityResult.NON_REPORTABLE;
+import static com.imsweb.ReportabilityScreener.ReportabilityResult.REPORTABLE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
@@ -22,36 +24,36 @@ class ReportabilityScreenerTest {
         builder.defaultKeywords();
         ReportabilityScreener screener = builder.build();
         ScreeningResult result = screener.screen("cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(REPORTABLE);
         result = screener.screen("not cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.NON_REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
         result = screener.screen("not cancer cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(REPORTABLE);
 
         builder = new ReportabilityScreenerBuilder();
-        builder.add("cancer", Group.POSITIVE);
-        builder.add("not cancer", Group.NEGATIVE);
-        builder.add("other", Group.OTHER);
+        builder.add("cancer", POSITIVE);
+        builder.add("not cancer", NEGATIVE);
+        builder.add("other", OTHER);
         screener = builder.build();
         result = screener.screen("cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(REPORTABLE);
         result = screener.screen("not cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.NON_REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
         result = screener.screen("not cancer other cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(REPORTABLE);
 
         builder = new ReportabilityScreenerBuilder();
-        builder.add(Arrays.asList("cancer", "malignant neoplasm", "ca"), Group.POSITIVE);
-        builder.add(Arrays.asList("not cancer", "r/o cancer", "no ca"), Group.NEGATIVE);
-        builder.add(Arrays.asList("other", "sella turcica"), Group.OTHER);
+        builder.add(Arrays.asList("cancer", "malignant neoplasm", "ca"), POSITIVE);
+        builder.add(Arrays.asList("not cancer", "r/o cancer", "no ca"), NEGATIVE);
+        builder.add(Arrays.asList("other", "sella turcica"), OTHER);
         screener = builder.build();
         result = screener.screen("cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(REPORTABLE);
         result = screener.screen("not cancer");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.NON_REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
         // positive keyword "ca" should not match in "turcica" because keyword matches are whole-word-only
         result = screener.screen("not cancer no ca sella turcica");
-        assertThat(result.getResult()).isEqualTo(ReportabilityResult.NON_REPORTABLE);
+        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
     }
 
     @Test
@@ -60,12 +62,12 @@ class ReportabilityScreenerTest {
         List<Keyword> negativeKeywordMatches;
         ReportabilityScreener screener = new ReportabilityScreenerBuilder().build();
 
-        Keyword posKeyword10to20 = new Keyword("posKeyword", 10, 20, Group.POSITIVE);
-        Keyword posKeyword15to25 = new Keyword("posKeyword", 15, 25, Group.POSITIVE);
-        Keyword posKeyword15to16 = new Keyword("posKeyword", 15, 16, Group.POSITIVE);
-        Keyword negKeyword9to21 = new Keyword("negKeyword", 9, 21, Group.NEGATIVE);
-        Keyword negKeyword10to20 = new Keyword("negKeyword", 10, 20, Group.NEGATIVE);
-        Keyword negKeyword15to16 = new Keyword("negKeyword", 15, 16, Group.NEGATIVE);
+        Keyword posKeyword10to20 = new Keyword("posKeyword", 10, 20, POSITIVE);
+        Keyword posKeyword15to25 = new Keyword("posKeyword", 15, 25, POSITIVE);
+        Keyword posKeyword15to16 = new Keyword("posKeyword", 15, 16, POSITIVE);
+        Keyword negKeyword9to21 = new Keyword("negKeyword", 9, 21, NEGATIVE);
+        Keyword negKeyword10to20 = new Keyword("negKeyword", 10, 20, NEGATIVE);
+        Keyword negKeyword15to16 = new Keyword("negKeyword", 15, 16, NEGATIVE);
 
         // single positive keyword match -> not ignored
         positiveKeywordMatches = Collections.singletonList(posKeyword10to20);
@@ -129,14 +131,14 @@ class ReportabilityScreenerTest {
     @Test
     void testGetResultBasedOnKeywordMatches() {
         ReportabilityScreener screener = new ReportabilityScreenerBuilder().build();
-        assertThat(ReportabilityResult.NON_REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.emptyList()));
+        assertThat(NON_REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.emptyList()));
 
-        Keyword positiveKeywordMatch = new Keyword("positive keyword", 1, 2, Group.POSITIVE);
-        Keyword ignoredPositiveMatch = new Keyword("positive keyword", 3, 4, Group.POSITIVE);
+        Keyword positiveKeywordMatch = new Keyword("positive keyword", 1, 2, POSITIVE);
+        Keyword ignoredPositiveMatch = new Keyword("positive keyword", 3, 4, POSITIVE);
         ignoredPositiveMatch.setIgnored(true);
 
-        assertThat(ReportabilityResult.REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.singletonList(positiveKeywordMatch)));
-        assertThat(ReportabilityResult.NON_REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.singletonList(ignoredPositiveMatch)));
-        assertThat(ReportabilityResult.REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Arrays.asList(positiveKeywordMatch, ignoredPositiveMatch)));
+        assertThat(REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.singletonList(positiveKeywordMatch)));
+        assertThat(NON_REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.singletonList(ignoredPositiveMatch)));
+        assertThat(REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Arrays.asList(positiveKeywordMatch, ignoredPositiveMatch)));
     }
 }

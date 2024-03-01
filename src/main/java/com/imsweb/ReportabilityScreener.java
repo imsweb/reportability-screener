@@ -5,6 +5,12 @@ import java.util.stream.Collectors;
 
 import org.ahocorasick.trie.Trie;
 
+import static com.imsweb.ReportabilityScreener.Group.NEGATIVE;
+import static com.imsweb.ReportabilityScreener.Group.OTHER;
+import static com.imsweb.ReportabilityScreener.Group.POSITIVE;
+import static com.imsweb.ReportabilityScreener.ReportabilityResult.NON_REPORTABLE;
+import static com.imsweb.ReportabilityScreener.ReportabilityResult.REPORTABLE;
+
 public class ReportabilityScreener {
 
     public enum Group {POSITIVE, NEGATIVE, OTHER}
@@ -23,9 +29,9 @@ public class ReportabilityScreener {
     public ScreeningResult screen(String text) {
         ScreeningResult result = new ScreeningResult();
 
-        result.setPositiveKeywords(_positiveTrie.parseText(text).stream().map(e -> new Keyword(e, Group.POSITIVE)).collect(Collectors.toList()));
-        result.setNegativeKeywords(_negativeTrie.parseText(text).stream().map(e -> new Keyword(e, Group.NEGATIVE)).collect(Collectors.toList()));
-        result.setOtherKeywords(_otherTrie.parseText(text).stream().map(e -> new Keyword(e, Group.OTHER)).collect(Collectors.toList()));
+        result.setPositiveKeywords(_positiveTrie.parseText(text).stream().map(e -> new Keyword(e, POSITIVE)).collect(Collectors.toList()));
+        result.setNegativeKeywords(_negativeTrie.parseText(text).stream().map(e -> new Keyword(e, NEGATIVE)).collect(Collectors.toList()));
+        result.setOtherKeywords(_otherTrie.parseText(text).stream().map(e -> new Keyword(e, OTHER)).collect(Collectors.toList()));
 
         ignoreNegatedPositiveKeywordMatches(result.getPositiveKeywords(), result.getNegativeKeywords());
         result.setResult(getResultBasedOnKeywordMatches(result.getPositiveKeywords()));
@@ -55,8 +61,8 @@ public class ReportabilityScreener {
      */
     protected ReportabilityResult getResultBasedOnKeywordMatches(List<Keyword> positiveKeywords) {
         if (positiveKeywords.stream().anyMatch(k -> !k.isIgnored()))
-            return ReportabilityResult.REPORTABLE;
+            return REPORTABLE;
         else
-            return ReportabilityResult.NON_REPORTABLE;
+            return NON_REPORTABLE;
     }
 }
