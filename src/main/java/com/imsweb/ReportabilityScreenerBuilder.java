@@ -61,7 +61,7 @@ public class ReportabilityScreenerBuilder {
 
     }
 
-    private Group getGroupFromString(String groupString) {
+    protected Group getGroupFromString(String groupString) {
         Group group;
         switch (groupString) {
             case "Positive":
