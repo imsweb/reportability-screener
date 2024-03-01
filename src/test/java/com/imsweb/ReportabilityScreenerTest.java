@@ -20,40 +20,70 @@ class ReportabilityScreenerTest {
 
     @Test
     void testReportabilityScreener() {
+        // test building with default keywords
         ReportabilityScreenerBuilder builder = new ReportabilityScreenerBuilder();
         builder.defaultKeywords();
         ReportabilityScreener screener = builder.build();
-        ScreeningResult result = screener.screen("cancer");
-        assertThat(result.getResult()).isEqualTo(REPORTABLE);
-        result = screener.screen("not cancer");
-        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
-        result = screener.screen("not cancer cancer");
-        assertThat(result.getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.screen("not cancer cancer").getResult()).isEqualTo(REPORTABLE);
 
+        // test building with adding keywords individually
         builder = new ReportabilityScreenerBuilder();
         builder.add("cancer", POSITIVE);
         builder.add("not cancer", NEGATIVE);
         builder.add("other", OTHER);
         screener = builder.build();
-        result = screener.screen("cancer");
-        assertThat(result.getResult()).isEqualTo(REPORTABLE);
-        result = screener.screen("not cancer");
-        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
-        result = screener.screen("not cancer other cancer");
-        assertThat(result.getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.screen("not cancer other cancer").getResult()).isEqualTo(REPORTABLE);
 
+        // test building with adding keywords as a list
         builder = new ReportabilityScreenerBuilder();
         builder.add(Arrays.asList("cancer", "malignant neoplasm", "ca"), POSITIVE);
         builder.add(Arrays.asList("not cancer", "r/o cancer", "no ca"), NEGATIVE);
         builder.add(Arrays.asList("other", "sella turcica"), OTHER);
         screener = builder.build();
-        result = screener.screen("cancer");
-        assertThat(result.getResult()).isEqualTo(REPORTABLE);
-        result = screener.screen("not cancer");
-        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
-        // positive keyword "ca" should not match in "turcica" because keyword matches are whole-word-only
-        result = screener.screen("not cancer no ca sella turcica");
-        assertThat(result.getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
+
+        // test case with no negative/other keywords defined
+        builder = new ReportabilityScreenerBuilder();
+        builder.add("cancer", POSITIVE);
+        screener = builder.build();
+        assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("not cancer").getResult()).isEqualTo(REPORTABLE);
+
+        // test case with no positive keywords defined
+        builder = new ReportabilityScreenerBuilder();
+        builder.add("not cancer", NEGATIVE);
+        screener = builder.build();
+        assertThat(screener.screen("cancer").getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
+
+        // test case with no keywords defined
+        screener = new ReportabilityScreenerBuilder().build();
+        assertThat(screener.screen("cancer").getResult()).isEqualTo(NON_REPORTABLE);
+
+        // test case-insensitivity
+        builder = new ReportabilityScreenerBuilder();
+        builder.add(Arrays.asList("Cancer", "malignant neoplasm", "CA"), POSITIVE);
+        builder.add(Arrays.asList("Not Cancer", "r/o CANCER", "no ca"), NEGATIVE);
+        builder.add(Arrays.asList("other", "sella turcica"), OTHER);
+        screener = builder.build();
+        assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("CANCER").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("ca").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("MALIGNANT NEOPLASM").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("r/o cancer").getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.screen("r/o Cancer").getResult()).isEqualTo(NON_REPORTABLE);
+
+        // test whole word only behavior
+        // positive keyword "ca" should not match in "turcica"
+        assertThat(screener.screen("sella turcica").getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.screen("cancerous").getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.screen("\"cancer\"").getResult()).isEqualTo(REPORTABLE);
+        assertThat(screener.screen("1.cancer, test").getResult()).isEqualTo(REPORTABLE);
     }
 
     @Test
