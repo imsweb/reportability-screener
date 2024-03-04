@@ -190,6 +190,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <finalName>reportability-screener-all</finalName>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>all</shadedClassifierName>
                             <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
