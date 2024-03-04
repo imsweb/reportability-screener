@@ -4,4 +4,57 @@
 [![Integration](https://github.com/imsweb/reportability-screener/actions/workflows/integration.yml/badge.svg)](https://github.com/imsweb/reportability-screener/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.imsweb/reportability-screener/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.imsweb/reportability-screener)
 
-Placeholder for reportability screening project.
+A library for screening pathology reports for cancer incidence. 
+
+## Download
+
+Java 8 is the minimum version required to use the library.
+
+Maven
+
+```xml
+
+<dependency>
+    <groupId>com.imsweb</groupId>
+    <artifactId>reportability-screener</artifactId>
+    <version>x.x.x</version>
+</dependency>
+```
+
+Gradle
+
+```groovy
+compile 'com.imsweb:reportability-screener:x.x.x'
+```
+
+## Usage
+
+First, create an instance of `ReportabilityScreener`. To use the default set of keywords:
+
+```java
+ReportabilityScreener screener = new ReportabilityScreenerBuilder().defaultKeywords().build();
+```
+
+To instantiate with custom keywords.
+
+```java
+ReportabilityScreenerBuilder builder = new ReportabilityScreenerBuilder();
+builder.add("positive keyword", Group.POSITIVE);
+builder.add("negative keyword", Group.NEGATIVE);
+builder.add("other keyword", Group.OTHER);
+ReportabilityScreener screener = builder.build();
+```
+
+To screen text:
+
+```java
+ScreeningResult result = screener.screen("full path report text goes here");
+```
+
+The `ScreeningResult` contains the `ReportabilityResult` as well as the postitive, negative and other keywords that were found and contributed to the reportability.
+
+## About SEER
+
+The Surveillance, Epidemiology and End Results ([SEER](http://seer.cancer.gov)) Program is a premier source for cancer statistics in the United States. The SEER
+Program collects information on incidence, prevalence and survival from specific geographic areas representing 28 percent of the US population and reports on all
+these data plus cancer mortality data for the entire country.
