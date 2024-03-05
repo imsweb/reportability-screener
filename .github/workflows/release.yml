@@ -1,9 +1,10 @@
 name: Maven Central Deployment
 
 on:
-  push:
-    tags:
-      - 'v*'     # Trigger on version tags for releases
+  repository_dispatch:
+    types: manual-publish
+  release:
+    types: [ created ]
 
 jobs:
   build-and-deploy:
