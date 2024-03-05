@@ -62,15 +62,24 @@ public class ReportabilityScreenerBuilder {
     }
 
     protected Group getGroupFromString(String groupString) {
+        if (groupString == null || groupString.trim().isEmpty())
+            throw new IllegalArgumentException("Group value cannot be blank.");
+
         Group group;
-        switch (groupString) {
-            case "Positive":
+        switch (groupString.trim().toLowerCase()) {
+            case "positive":
+            case "pos":
+            case "p":
                 group = POSITIVE;
                 break;
-            case "Negative":
+            case "negative":
+            case "neg":
+            case "n":
                 group = NEGATIVE;
                 break;
-            case "Other":
+            case "other":
+            case "oth":
+            case "o":
                 group = OTHER;
                 break;
             default:

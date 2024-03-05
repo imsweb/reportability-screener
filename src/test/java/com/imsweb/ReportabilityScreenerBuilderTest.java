@@ -16,13 +16,21 @@ class ReportabilityScreenerBuilderTest {
     @Test
     void testGetGroupFromString() {
         ReportabilityScreenerBuilder builder = new ReportabilityScreenerBuilder();
-        assertThat(builder.getGroupFromString("Positive")).isEqualTo(POSITIVE);
+        assertThat(builder.getGroupFromString("POSITIVE")).isEqualTo(POSITIVE);
         assertThat(builder.getGroupFromString("Negative")).isEqualTo(NEGATIVE);
-        assertThat(builder.getGroupFromString("Other")).isEqualTo(OTHER);
+        assertThat(builder.getGroupFromString("other")).isEqualTo(OTHER);
 
+        assertThat(builder.getGroupFromString(" POS ")).isEqualTo(POSITIVE);
+        assertThat(builder.getGroupFromString("\tNeg\t")).isEqualTo(NEGATIVE);
+        assertThat(builder.getGroupFromString("\noth\r\n")).isEqualTo(OTHER);
+
+        assertThat(builder.getGroupFromString("P")).isEqualTo(POSITIVE);
+        assertThat(builder.getGroupFromString("n")).isEqualTo(NEGATIVE);
+        assertThat(builder.getGroupFromString("o")).isEqualTo(OTHER);
+
+        assertThatThrownBy(() -> builder.getGroupFromString(null)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> builder.getGroupFromString("")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> builder.getGroupFromString("positive")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> builder.getGroupFromString("NEGATIVE")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> builder.getGroupFromString(" Other ")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.getGroupFromString("    ")).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> builder.getGroupFromString("+")).isInstanceOf(IllegalArgumentException.class);
     }
 }
