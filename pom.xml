@@ -8,6 +8,37 @@
 
     <name>reportability-screener</name>
 
+    <description>A keyword-based screening library for pathology report text</description>
+    <url>https://github.com/imsweb/reportability-screener</url>
+
+    <licenses>
+        <license>
+            <name>A modified BSD License (BSD)</name>
+            <url>https://github.com/imsweb/reportability-screener/blob/main/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/imsweb/reportability-screener</url>
+        <connection>scm:git@github.com:imsweb/reportability-screener.git</connection>
+        <developerConnection>scm:git@github.com:imsweb/reportability-screener.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>ctmay4</id>
+            <name>Chuck May</name>
+            <email>mayc@imsweb.com</email>
+        </developer>
+        <developer>
+            <id>garybeverungen</id>
+            <name>Gary Beverungen</name>
+            <email>beverungeng@imsweb.com</email>
+        </developer>
+    </developers>
+
     <properties>
         <!-- build under 21 but release as JDK 8 compatible -->
         <java.version>21</java.version>
@@ -34,9 +65,9 @@
             <version>2.0.12</version>
         </dependency>
         <dependency>
-          <groupId>org.ahocorasick</groupId>
-          <artifactId>ahocorasick</artifactId>
-          <version>0.6.3</version>
+            <groupId>org.ahocorasick</groupId>
+            <artifactId>ahocorasick</artifactId>
+            <version>0.6.3</version>
         </dependency>
 
         <!-- test libraries -->
