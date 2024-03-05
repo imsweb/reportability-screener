@@ -38,7 +38,7 @@ class ReportabilityScreenerBuilderTest {
     }
 
     @Test
-    public void testFormatKeyword() {
+    void testFormatKeyword() {
         String longStringUpper = "    " + String.join("", Collections.nCopies(_KEYWORD_MAX_LENGTH, "A")) + "    ";
         String longStringLower = String.join("", Collections.nCopies(_KEYWORD_MAX_LENGTH, "a"));
         String tooLong = String.join("", Collections.nCopies(_KEYWORD_MAX_LENGTH + 1, "A"));
