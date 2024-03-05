@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy to Maven Central
         if: startsWith(github.ref, 'refs/tags/')  # Only deploy releases to Maven Central
-        run: ./mvnw -B clean nexus-staging:release -P release --settings .github/maven/settings.xml
+        run: ./mvnw -B clean nexus-staging:deploy nexus-staging:release -P release --settings .github/maven/settings.xml
         env:
           OSSRH_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
