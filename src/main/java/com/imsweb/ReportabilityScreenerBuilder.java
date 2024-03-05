@@ -6,6 +6,7 @@ package com.imsweb;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.ahocorasick.trie.Trie;
@@ -23,10 +24,15 @@ public class ReportabilityScreenerBuilder {
     private final TrieBuilder _negativeTrieBuilder;
     private final TrieBuilder _otherTrieBuilder;
 
+    private final List<String> _keywords;
+
+    protected static final int _KEYWORD_MAX_LENGTH = 200;
+
     public ReportabilityScreenerBuilder() {
         _positiveTrieBuilder = Trie.builder().onlyWholeWords().ignoreCase();
         _negativeTrieBuilder = Trie.builder().onlyWholeWords().ignoreCase();
         _otherTrieBuilder = Trie.builder().onlyWholeWords().ignoreCase();
+        _keywords = new ArrayList<>();
     }
 
     public ReportabilityScreener build() {
@@ -34,6 +40,7 @@ public class ReportabilityScreenerBuilder {
     }
 
     public void add(String keyword, Group group) {
+        keyword = formatKeyword(keyword);
         switch (group) {
             case POSITIVE:
                 _positiveTrieBuilder.addKeyword(keyword);
@@ -59,6 +66,20 @@ public class ReportabilityScreenerBuilder {
             throw new IllegalStateException("Unable to parse default keyword list.", e);
         }
 
+    }
+
+    protected String formatKeyword(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty())
+            throw new IllegalArgumentException("Keyword cannot be blank.");
+        keyword = keyword.trim().toLowerCase();
+        if (keyword.length() > _KEYWORD_MAX_LENGTH)
+            throw new IllegalArgumentException("Keyword must be 200 characters or fewer:" + keyword);
+        if (_keywords.contains(keyword))
+            throw new IllegalArgumentException("Keyword has already been added: " + keyword);
+        else
+            _keywords.add(keyword);
+
+        return keyword;
     }
 
     protected Group getGroupFromString(String groupString) {
