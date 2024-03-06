@@ -6,6 +6,9 @@
 
 A library for screening pathology reports for cancer incidence. 
 
+The library is based on a list of POSITIVE, NEGATIVE and OTHER keyword groups. The list can either be supplied to the library or the internal list of 
+[keywords](https://github.com/imsweb/reportability-screener/blob/main/src/main/resources/default.keyword.list.txt) can be used.
+
 ## Download
 
 Java 8 is the minimum version required to use the library.
@@ -52,6 +55,14 @@ ScreeningResult result = screener.screen("full path report text goes here");
 ```
 
 The `ScreeningResult` contains the `ReportabilityResult` as well as the postitive, negative and other keywords that were found and contributed to the reportability.
+
+To just check reportability
+
+```java
+if (result.getResult().equals(ReportabilityResult.REPORTABLE)) {
+    // process reportable report
+}
+```
 
 ## About SEER
 
