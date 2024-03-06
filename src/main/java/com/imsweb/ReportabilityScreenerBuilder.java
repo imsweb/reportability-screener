@@ -39,7 +39,7 @@ public class ReportabilityScreenerBuilder {
         return new ReportabilityScreener(_positiveTrieBuilder.build(), _negativeTrieBuilder.build(), _otherTrieBuilder.build());
     }
 
-    public void add(String keyword, Group group) {
+    public ReportabilityScreenerBuilder add(String keyword, Group group) {
         keyword = formatKeyword(keyword);
         switch (group) {
             case POSITIVE:
@@ -52,13 +52,17 @@ public class ReportabilityScreenerBuilder {
                 _otherTrieBuilder.addKeyword(keyword);
                 break;
         }
+
+        return this;
     }
 
-    public void add(List<String> keywords, Group group) {
+    public ReportabilityScreenerBuilder add(List<String> keywords, Group group) {
         keywords.forEach(k -> add(k, group));
+
+        return this;
     }
 
-    public void defaultKeywords() {
+    public ReportabilityScreenerBuilder defaultKeywords() {
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/default.keyword.list.txt"))) {
             reader.lines().map(l -> l.split("\\|")).forEach(l -> add(l[0], getGroupFromString(l[1])));
         }
@@ -66,6 +70,7 @@ public class ReportabilityScreenerBuilder {
             throw new IllegalStateException("Unable to parse default keyword list.", e);
         }
 
+        return this;
     }
 
     protected String formatKeyword(String keyword) {
