@@ -11,8 +11,8 @@ import static com.imsweb.ReportabilityScreener.Group.NEGATIVE;
 import static com.imsweb.ReportabilityScreener.Group.OTHER;
 import static com.imsweb.ReportabilityScreener.Group.POSITIVE;
 import static com.imsweb.ReportabilityScreenerBuilder._KEYWORD_MAX_LENGTH;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ReportabilityScreenerBuilderTest {
 
@@ -55,4 +55,5 @@ class ReportabilityScreenerBuilderTest {
         assertThatThrownBy(() -> builder.formatKeyword(tooLong)).isInstanceOf(IllegalArgumentException.class);
         assertThatThrownBy(() -> builder.formatKeyword("keyword1")).isInstanceOf(IllegalArgumentException.class);
     }
+
 }

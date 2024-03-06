@@ -78,7 +78,7 @@ public class ReportabilityScreenerBuilder {
             throw new IllegalArgumentException("Keyword cannot be blank.");
         keyword = keyword.trim().toLowerCase();
         if (keyword.length() > _KEYWORD_MAX_LENGTH)
-            throw new IllegalArgumentException("Keyword must be 200 characters or fewer:" + keyword);
+            throw new IllegalArgumentException("Keyword must be " + _KEYWORD_MAX_LENGTH + " characters or fewer:" + keyword);
         if (_keywords.contains(keyword))
             throw new IllegalArgumentException("Keyword has already been added: " + keyword);
         else
