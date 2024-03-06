@@ -30,6 +30,7 @@ class ReportabilityScreenerTest {
         for (Keyword keyword : keywords) {
             assertThat(keyword).isNotNull();
             assertThat(keyword.getKeyword()).isNotEmpty();
+            assertThat(keyword.getGroup()).isNotNull();
             assertThat(keyword.getStart()).isNotNegative();
             assertThat(keyword.getStart()).isLessThanOrEqualTo(keyword.getEnd());
 

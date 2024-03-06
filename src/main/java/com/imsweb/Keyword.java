@@ -9,13 +9,13 @@ import com.imsweb.ReportabilityScreener.Group;
 
 public class Keyword {
 
-    private String _keyword;
-    private int _start;
-    private int _end;
-    private Group _group;
+    private final String _keyword;
+    private final int _start;
+    private final int _end;
+    private final Group _group;
     private boolean _ignored;
 
-    public Keyword (String keyword, int start, int end, Group group) {
+    public Keyword(String keyword, int start, int end, Group group) {
         _keyword = keyword;
         _start = start;
         _end = end;
@@ -33,32 +33,16 @@ public class Keyword {
         return _keyword;
     }
 
-    public void setKeyword(String keyword) {
-        _keyword = keyword;
-    }
-
     public int getStart() {
         return _start;
-    }
-
-    public void setStart(int start) {
-        _start = start;
     }
 
     public int getEnd() {
         return _end;
     }
 
-    public void setEnd(int end) {
-        _end = end;
-    }
-
     public Group getGroup() {
         return _group;
-    }
-
-    public void setGroup(Group group) {
-        _group = group;
     }
 
     public boolean isIgnored() {
@@ -68,4 +52,5 @@ public class Keyword {
     public void setIgnored(boolean ignored) {
         _ignored = ignored;
     }
+
 }
