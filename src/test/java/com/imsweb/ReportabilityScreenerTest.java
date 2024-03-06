@@ -1,8 +1,13 @@
 package com.imsweb;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
@@ -11,53 +16,76 @@ import static com.imsweb.ReportabilityScreener.Group.OTHER;
 import static com.imsweb.ReportabilityScreener.Group.POSITIVE;
 import static com.imsweb.ReportabilityScreener.ReportabilityResult.NON_REPORTABLE;
 import static com.imsweb.ReportabilityScreener.ReportabilityResult.REPORTABLE;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit test for simple App.
  */
 class ReportabilityScreenerTest {
 
+    /**
+     * Verify keywords all match the actual text
+     */
+    private void verifyKeywords(List<Keyword> keywords, String text) {
+        for (Keyword keyword : keywords) {
+            assertThat(keyword).isNotNull();
+            assertThat(keyword.getKeyword()).isNotEmpty();
+            assertThat(keyword.getGroup()).isNotNull();
+            assertThat(keyword.getStart()).isNotNegative();
+            assertThat(keyword.getStart()).isLessThanOrEqualTo(keyword.getEnd());
+
+            assertThat(keyword.getKeyword()).isEqualToIgnoringCase(text.substring(keyword.getStart(), keyword.getEnd() + 1));
+        }
+    }
+
     @Test
-    void testReportabilityScreener() {
-        // test building with default keywords
-        ReportabilityScreenerBuilder builder = new ReportabilityScreenerBuilder();
-        builder.defaultKeywords();
-        ReportabilityScreener screener = builder.build();
+    void testReportabilityScreener() throws URISyntaxException, IOException {
+        // initialize with default keywords
+        ReportabilityScreener screener = new ReportabilityScreenerBuilder().defaultKeywords().build();
+
+        // screen a full sample file
+        String content = new String(Files.readAllBytes(Paths.get(Objects.requireNonNull(getClass().getResource("/samples/path1.txt")).toURI())));
+        ScreeningResult result = screener.screen(content);
+        assertThat(result.getResult()).isEqualTo(REPORTABLE);
+        assertThat(result.getPositiveKeywords()).hasSize(17).extracting("keyword").contains("lymphoma");
+        verifyKeywords(result.getPositiveKeywords(), content);
+        assertThat(result.getNegativeKeywords()).hasSize(1).extracting("keyword").containsExactly("history");
+        verifyKeywords(result.getNegativeKeywords(), content);
+        assertThat(result.getOtherKeywords()).hasSize(20).extracting("keyword").contains("blood");
+        verifyKeywords(result.getOtherKeywords(), content);
+
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
         assertThat(screener.screen("not cancer cancer").getResult()).isEqualTo(REPORTABLE);
 
         // test building with adding keywords individually
-        builder = new ReportabilityScreenerBuilder();
-        builder.add("cancer", POSITIVE);
-        builder.add("not cancer", NEGATIVE);
-        builder.add("other", OTHER);
-        screener = builder.build();
+        screener = new ReportabilityScreenerBuilder()
+                .add("cancer", POSITIVE)
+                .add("not cancer", NEGATIVE)
+                .add("other", OTHER)
+                .build();
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
         assertThat(screener.screen("not cancer other cancer").getResult()).isEqualTo(REPORTABLE);
 
         // test building with adding keywords as a list
-        builder = new ReportabilityScreenerBuilder();
-        builder.add(Arrays.asList("cancer", "malignant neoplasm", "ca"), POSITIVE);
-        builder.add(Arrays.asList("not cancer", "r/o cancer", "no ca"), NEGATIVE);
-        builder.add(Arrays.asList("other", "sella turcica"), OTHER);
-        screener = builder.build();
+        screener = new ReportabilityScreenerBuilder()
+                .add(Arrays.asList("cancer", "malignant neoplasm", "ca"), POSITIVE)
+                .add(Arrays.asList("not cancer", "r/o cancer", "no ca"), NEGATIVE)
+                .add(Arrays.asList("other", "sella turcica"), OTHER)
+                .build();
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
 
         // test case with no negative/other keywords defined
-        builder = new ReportabilityScreenerBuilder();
-        builder.add("cancer", POSITIVE);
-        screener = builder.build();
+        screener = new ReportabilityScreenerBuilder()
+                .add("cancer", POSITIVE)
+                .build();
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(REPORTABLE);
 
         // test case with no positive keywords defined
-        builder = new ReportabilityScreenerBuilder();
-        builder.add("not cancer", NEGATIVE);
-        screener = builder.build();
+        screener = new ReportabilityScreenerBuilder().add("not cancer", NEGATIVE).build();
         assertThat(screener.screen("cancer").getResult()).isEqualTo(NON_REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
 
@@ -66,11 +94,11 @@ class ReportabilityScreenerTest {
         assertThat(screener.screen("cancer").getResult()).isEqualTo(NON_REPORTABLE);
 
         // test case-insensitivity
-        builder = new ReportabilityScreenerBuilder();
-        builder.add(Arrays.asList("Cancer", "malignant neoplasm", "CA"), POSITIVE);
-        builder.add(Arrays.asList("Not Cancer", "r/o CANCER", "no ca"), NEGATIVE);
-        builder.add(Arrays.asList("other", "sella turcica"), OTHER);
-        screener = builder.build();
+        screener = new ReportabilityScreenerBuilder()
+                .add(Arrays.asList("Cancer", "malignant neoplasm", "CA"), POSITIVE)
+                .add(Arrays.asList("Not Cancer", "r/o CANCER", "no ca"), NEGATIVE)
+                .add(Arrays.asList("other", "sella turcica"), OTHER)
+                .build();
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("CANCER").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("ca").getResult()).isEqualTo(REPORTABLE);
@@ -161,14 +189,14 @@ class ReportabilityScreenerTest {
     @Test
     void testGetResultBasedOnKeywordMatches() {
         ReportabilityScreener screener = new ReportabilityScreenerBuilder().build();
-        assertThat(NON_REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.emptyList()));
+        assertThat(screener.getResultBasedOnKeywordMatches(Collections.emptyList())).isEqualTo(NON_REPORTABLE);
 
         Keyword positiveKeywordMatch = new Keyword("positive keyword", 1, 2, POSITIVE);
         Keyword ignoredPositiveMatch = new Keyword("positive keyword", 3, 4, POSITIVE);
         ignoredPositiveMatch.setIgnored(true);
 
-        assertThat(REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.singletonList(positiveKeywordMatch)));
-        assertThat(NON_REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Collections.singletonList(ignoredPositiveMatch)));
-        assertThat(REPORTABLE).isEqualTo(screener.getResultBasedOnKeywordMatches(Arrays.asList(positiveKeywordMatch, ignoredPositiveMatch)));
+        assertThat(screener.getResultBasedOnKeywordMatches(Collections.singletonList(positiveKeywordMatch))).isEqualTo(REPORTABLE);
+        assertThat(screener.getResultBasedOnKeywordMatches(Collections.singletonList(ignoredPositiveMatch))).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.getResultBasedOnKeywordMatches(Arrays.asList(positiveKeywordMatch, ignoredPositiveMatch))).isEqualTo(REPORTABLE);
     }
 }
