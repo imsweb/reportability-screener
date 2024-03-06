@@ -36,4 +36,5 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
+            target/classes/default.keyword.list.txt
             target/reportability-screener-all.jar
