@@ -14,6 +14,7 @@ import static com.imsweb.ReportabilityScreener.ReportabilityResult.REPORTABLE;
 public class ReportabilityScreener {
 
     public enum Group {POSITIVE, NEGATIVE, OTHER}
+
     public enum ReportabilityResult {REPORTABLE, NON_REPORTABLE, UNKNOWN}
 
     private final Trie _positiveTrie;
@@ -42,6 +43,7 @@ public class ReportabilityScreener {
     /**
      * If the start/end indexes of a positive keyword are withing the start/end indexes of a negative keyword,
      * set ignored=true on the positive keyword.
+     * <p />
      * E.g. the text "not cancer" will create keyword matches for positive keyword "cancer" and
      * negative keyword "not cancer". The positive keyword is being negated, and should be ignored.
      * @param positiveKeywords positive keyword matches from the text being screened, including start/end indexes
@@ -54,10 +56,10 @@ public class ReportabilityScreener {
     }
 
     /**
-     * If there are any non-ignored positive keyword matches, the screened text is considered Reportable.
-     * Otherwise, it is considered Non-reportable.
+     * If there are any non-ignored positive keyword matches, the screened text is considered REPORTABLE.
+     * Otherwise, it is considered NON_REPORTABLE.
      * @param positiveKeywords positive keyword matches from the text being screened
-     * @return ReportabilityResult indicating whether the screened text is Reportable or Non-reportable.
+     * @return ReportabilityResult indicating whether the screened text is REPORTABLE or NON_REPORTABLE.
      */
     protected ReportabilityResult getResultBasedOnKeywordMatches(List<Keyword> positiveKeywords) {
         if (positiveKeywords.stream().anyMatch(k -> !k.isIgnored()))

@@ -23,6 +23,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class ReportabilityScreenerTest {
 
+    /**
+     * Verify keywords all match the actual text
+     */
+    private void verifyKeywords(List<Keyword> keywords, String text) {
+        for (Keyword keyword : keywords) {
+            assertThat(keyword).isNotNull();
+            assertThat(keyword.getKeyword()).isNotEmpty();
+            assertThat(keyword.getStart()).isNotNegative();
+            assertThat(keyword.getStart()).isLessThanOrEqualTo(keyword.getEnd());
+
+            assertThat(keyword.getKeyword()).isEqualToIgnoringCase(text.substring(keyword.getStart(), keyword.getEnd() + 1));
+        }
+    }
+
     @Test
     void testReportabilityScreener() throws URISyntaxException, IOException {
         // initialize with default keywords
@@ -33,8 +47,11 @@ class ReportabilityScreenerTest {
         ScreeningResult result = screener.screen(content);
         assertThat(result.getResult()).isEqualTo(REPORTABLE);
         assertThat(result.getPositiveKeywords()).hasSize(17).extracting("keyword").contains("lymphoma");
+        verifyKeywords(result.getPositiveKeywords(), content);
         assertThat(result.getNegativeKeywords()).hasSize(1).extracting("keyword").containsExactly("history");
+        verifyKeywords(result.getNegativeKeywords(), content);
         assertThat(result.getOtherKeywords()).hasSize(20).extracting("keyword").contains("blood");
+        verifyKeywords(result.getOtherKeywords(), content);
 
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
