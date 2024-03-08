@@ -4,10 +4,12 @@
 package com.imsweb;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.ahocorasick.trie.Trie;
 import org.ahocorasick.trie.Trie.TrieBuilder;
@@ -63,7 +65,8 @@ public class ReportabilityScreenerBuilder {
     }
 
     public ReportabilityScreenerBuilder defaultKeywords() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/default.keyword.list.txt"))) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("default.keyword.list.txt");
+             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
             reader.lines().map(l -> l.split("\\|")).forEach(l -> add(l[0], getGroupFromString(l[1])));
         }
         catch (IOException e) {
