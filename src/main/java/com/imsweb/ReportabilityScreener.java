@@ -27,6 +27,11 @@ public class ReportabilityScreener {
         _otherTrie = otherTrie;
     }
 
+    /**
+     * Screen text and return information about reportability and keywords found
+     * @param text text to screen
+     * @return a {@link ScreeningResult} which includes reportability as well as the keywords used to determine it
+     */
     public ScreeningResult screen(String text) {
         ScreeningResult result = new ScreeningResult();
 
@@ -38,6 +43,15 @@ public class ReportabilityScreener {
         result.setResult(getResultBasedOnKeywordMatches(result.getPositiveKeywords()));
 
         return result;
+    }
+
+    /**
+     * Returns true if the text screens as reportable
+     * @param text text to screen
+     * @return true if reportable
+     */
+    public boolean isReportable(String text) {
+        return screen(text).getResult().equals(REPORTABLE);
     }
 
     /**

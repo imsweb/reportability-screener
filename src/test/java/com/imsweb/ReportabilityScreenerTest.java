@@ -54,6 +54,9 @@ class ReportabilityScreenerTest {
         assertThat(result.getOtherKeywords()).hasSize(20).extracting("keyword").contains("blood");
         verifyKeywords(result.getOtherKeywords(), content);
 
+        // check the simple reportable call
+        assertThat(screener.isReportable(content)).isTrue();
+
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
         assertThat(screener.screen("not cancer cancer").getResult()).isEqualTo(REPORTABLE);
@@ -76,6 +79,7 @@ class ReportabilityScreenerTest {
                 .build();
         assertThat(screener.screen("cancer").getResult()).isEqualTo(REPORTABLE);
         assertThat(screener.screen("not cancer").getResult()).isEqualTo(NON_REPORTABLE);
+        assertThat(screener.isReportable("not cancer")).isFalse();
 
         // test case with no negative/other keywords defined
         screener = new ReportabilityScreenerBuilder()
