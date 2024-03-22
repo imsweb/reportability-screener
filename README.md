@@ -51,7 +51,7 @@ ReportabilityScreener screener = builder.build();
 To screen text and get information about reportability and the keywords used:
 
 ```java
-ScreeningResult result = screener.screen("full path report text goes here");
+ScreeningResult result = screener.screen("text to screen");
 ```
 
 The `ScreeningResult` contains the `ReportabilityResult` as well as the positive, negative and other keywords that were found and contributed to the reportability.
@@ -59,7 +59,7 @@ The `ScreeningResult` contains the `ReportabilityResult` as well as the positive
 To just check reportability:
 
 ```java
-if (screener.isReportable("full path text report goes here")) {
+if(screener.isReportable("text to screen")){
     // process reportable report
 }
 ```
