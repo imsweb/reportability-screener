@@ -21,7 +21,7 @@ public class ReportabilityScreener {
     private final Trie _negativeTrie;
     private final Trie _otherTrie;
 
-    public ReportabilityScreener(Trie positiveTrie, Trie negativeTrie, Trie otherTrie) {
+    ReportabilityScreener(Trie positiveTrie, Trie negativeTrie, Trie otherTrie) {
         _positiveTrie = positiveTrie;
         _negativeTrie = negativeTrie;
         _otherTrie = otherTrie;
